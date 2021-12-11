@@ -291,22 +291,26 @@ Kemudian kalian diminta untuk membatasi akses ke Doriki yang berasal dari subnet
 
 ```bash
 # Blueno
-iptables -A INPUT -s 10.32.7.0/25 -m time --timestart 07:00 --timestop 15:00 -j ACCEPT
+iptables -A INPUT -s 10.32.7.0/25 -m time --timestart 07:00 --timestop 15:00 --weekdays Mon,Tue,Wed,Thu -j ACCEPT
 iptables -A INPUT -s 10.32.7.0/25 -j REJECT
 
 # Cipher
-iptables -A INPUT -s 10.32.0.0/22 -m time --timestart 07:00 --timestop 15:00 -j ACCEPT
+iptables -A INPUT -s 10.32.0.0/22 -m time --timestart 07:00 --timestop 15:00 --weekdays Mon,Tue,Wed,Thu -j ACCEPT
 iptables -A INPUT -s 10.32.0.0/22 -j REJECT
 ```
 
 ```bash
 Senin
-date -s "7 DEC 2021 08:00:00" -> bisa
-date -s "7 DEC 2021 20:00:00" -> gabisa
+   Bisa
+date -s "7 DEC 2021 08:00:00"
+   Gabisa
+date -s "7 DEC 2021 20:00:00"
 
 Sabtu
-date -s "11 DEC 2021 09:00:00" -> gabisa
-date -s "11 DEC 2021 21:00:00" -> gabisa
+   Gabisa
+date -s "11 DEC 2021 09:00:00"
+   Gabisa
+date -s "11 DEC 2021 21:00:00"
 ```
 
 ## 5.
