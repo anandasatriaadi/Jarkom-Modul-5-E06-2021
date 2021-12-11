@@ -283,8 +283,31 @@ iptables -A INPUT -p icmp -m connlimit --connlimit-above 3 --connlimit-mask 0 -j
 Menggunakan INPUT chain untuk menyaring paket dengan protokol ICMP yang masuk agar dibatasi hanya sebatas maksimal 3 koneksi saja menggunakan `--connlimit-above 3` kemudian bisa diakses darimana saja menggunakan `--connlimit-mask 0`, jika lebih dari 3 akan di DROP
 
 Kemudian kalian diminta untuk membatasi akses ke Doriki yang berasal dari subnet Blueno, Cipher, Elena dan Fukuro dengan beraturan sebagai berikut
+
 ## 4.
 ### Akses dari subnet Blueno dan Cipher hanya diperbolehkan pada pukul 07.00 - 15.00 pada hari Senin sampai Kamis.
+
+### Solusi
+
+```bash
+# Blueno
+iptables -A INPUT -s 10.32.7.0/25 -m time --timestart 07:00 --timestop 15:00 -j ACCEPT
+iptables -A INPUT -s 10.32.7.0/25 -j REJECT
+
+# Cipher
+iptables -A INPUT -s 10.32.0.0/22 -m time --timestart 07:00 --timestop 15:00 -j ACCEPT
+iptables -A INPUT -s 10.32.0.0/22 -j REJECT
+```
+
+```bash
+Senin
+date -s "7 DEC 2021 08:00:00" -> bisa
+date -s "7 DEC 2021 20:00:00" -> gabisa
+
+Sabtu
+date -s "11 DEC 2021 09:00:00" -> gabisa
+date -s "11 DEC 2021 21:00:00" -> gabisa
+```
 
 ## 5.
 ### Akses dari subnet Elena dan Fukuro hanya diperbolehkan pada pukul 15.01 hingga pukul 06.59 setiap harinya.
