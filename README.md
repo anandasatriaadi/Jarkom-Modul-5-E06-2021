@@ -16,8 +16,134 @@ Keterangan :
 ## (B)
 ### Karena kalian telah belajar subnetting dan routing, Luffy ingin meminta kalian untuk membuat topologi tersebut menggunakan teknik CIDR atau VLSM. setelah melakukan subnetting, 
 
+### Solusi
+**Disini kami menggunakan teknik VLSM untuk pembagian subnet, sehingga pembagian subnet menjadi:**
+
+![image](https://user-images.githubusercontent.com/57354564/145662972-eba68124-6b59-4b0d-9e64-3cd70ba698ac.png)
+
+| Network | Jumlah IP | Netmask |
+|:-------:|:---------:|:-------:|
+| A1      |         3 | /29     |
+| A2      |       101 | /25     |
+| A3      |       701 | /22     |
+| A4      |         2 | /30     |
+| A5      |         2 | /30     |
+| A6      |       301 | /23     |
+| A7      |       201 | /24     |
+| A8      |         3 | /29     |
+| Total   |      1314 | /21     |
+
+| Name | Network Address | Slash |       Mask      |  Broadcast  |
+|:----:|:---------------:|:-----:|:---------------:|:-----------:|
+|  A1  |   10.32.7.128   |  /29  | 255.255.255.248 | 10.32.7.135 |
+|  A2  |    10.32.7.0    |  /25  | 255.255.255.128 | 10.32.7.127 |
+|  A3  |    10.32.0.0    |  /22  |  255.255.252.0  | 10.32.3.255 |
+|  A4  |   10.32.7.144   |  /30  | 255.255.255.252 | 10.32.7.147 |
+|  A5  |   10.32.7.148   |  /30  | 255.255.255.252 | 10.32.7.151 |
+|  A6  |    10.32.4.0    |  /23  |  255.255.254.0  | 10.32.5.255 |
+|  A7  |    10.32.6.0    |  /24  |  255.255.255.0  | 10.32.6.255 |
+|  A8  |   10.32.7.136   |  /29  | 255.255.255.248 | 10.32.7.143 |
+
+**Tabel pengaturan interface router:**
+
+| INTERFACE FOOSHA |             |     NETMASK     |
+|:----------------:|:-----------:|:---------------:|
+| NAT              |             |                 |
+| WATER7           | 10.32.7.145 | 255.255.255.252 |
+| GUANHAO          | 10.32.7.149 | 255.255.255.252 |
+
+| INTERFACE WATER7 |             |     NETMASK     |
+|:----------------:|:-----------:|:---------------:|
+| FOOSHA           | 10.32.7.146 | 255.255.255.252 |
+| DORI/JIPA        | 10.32.7.129 | 255.255.255.248 |
+| BLUENO           | 10.32.7.1   | 255.255.255.128 |
+| CIPHER           | 10.32.0.1   | 255.255.252.0   |
+
+| INTERFACE GUANHAO |             |     NETMASK     |
+|:-----------------:|:-----------:|:---------------:|
+| FOOSHA            | 10.32.7.150 | 255.255.255.252 |
+| ELENA             | 10.32.4.1   | 255.255.254.0   |
+| JORGE/MAIN        | 10.32.7.137 | 255.255.255.248 |
+| FUKUROU           | 10.32.6.1   | 255.255.255.0   |
+
+**Tabel pengaturan interface client & server**
+| INTERFACE DORIKI |             |   GATEWAY   |     NETMASK     |
+|:----------------:|:-----------:|:-----------:|:---------------:|
+| WATER7           | 10.32.7.130 | 10.32.7.129 | 255.255.255.248 |
+
+| INTERFACE JIPANGU |             |   GATEWAY   |     NETMASK     |
+|:-----------------:|:-----------:|:-----------:|:---------------:|
+| WATER7            | 10.32.7.131 | 10.32.7.129 | 255.255.255.248 |
+
+| INTERFACE BLUENO |           |  GATEWAY  |     NETMASK     |
+|:----------------:|:---------:|:---------:|:---------------:|
+| WATER7           | 10.32.7.2 | 10.32.7.1 | 255.255.255.128 |
+
+| INTERFACE CIPHER |           |  GATEWAY  |    NETMASK    |
+|:----------------:|:---------:|:---------:|:-------------:|
+| WATER7           | 10.32.0.2 | 10.32.0.1 | 255.255.252.0 |
+
+| INTERFACE ELENA |           |  GATEWAY  |    NETMASK    |
+|:---------------:|:---------:|:---------:|:-------------:|
+| PUCCI           | 10.32.4.2 | 10.32.4.1 | 255.255.254.0 |
+
+| INTERFACE FUKUROU |           |  GATEWAY  |    NETMASK    |
+|:-----------------:|:---------:|:---------:|:-------------:|
+| PUCCI             | 10.32.6.2 | 10.32.6.1 | 255.255.255.0 |
+
+| INTERFACE JORGE |             |   GATEWAY   |     NETMASK     |
+|:---------------:|:-----------:|:-----------:|:---------------:|
+| PUCCI           | 10.32.7.138 | 10.32.7.137 | 255.255.255.248 |
+
+| INTERFACE MAINGATE |             |   GATEWAY   |     NETMASK     |
+|:------------------:|:-----------:|:-----------:|:---------------:|
+| PUCCI              | 10.32.7.139 | 10.32.7.137 | 255.255.255.248 |
+
 ## (C)
 ### Kalian juga diharuskan melakukan Routing agar setiap perangkat pada jaringan tersebut dapat terhubung.
+
+**Dari tabel subnetting diatas, maka tabel routing dari topologi ini adalah sebagai berikut:**
+
+| ROUTING FOOSHA |                 |     |             |
+|:--------------:|:---------------:|:---:|:-----------:|
+| 10.32.0.0      | 255.255.252.0   | via | 10.32.7.146 |
+| 10.32.7.0      | 255.255.255.128 | via | 10.32.7.146 |
+| 10.32.7.128    | 255.255.255.248 | via | 10.32.7.146 |
+| 10.32.4.0      | 255.255.254.0   | via | 10.32.7.150 |
+| 10.32.6.0      | 255.255.255.0   | via | 10.32.7.150 |
+| 10.32.7.136    | 255.255.255.248 | via | 10.32.7.150 |
+
+| ROUTING WATER7 |         |     |             |
+|:--------------:|:-------:|:---:|:-----------:|
+| 0.0.0.0        | 0.0.0.0 | via | 10.32.7.145 |
+
+| ROUTING PUCCI |         |     |             |
+|:-------------:|:-------:|:---:|:-----------:|
+| 0.0.0.0       | 0.0.0.0 | via | 10.32.7.149 |
+
+**Berikut adalah konfigurasi routing pada FOOSHA**
+```bash
+
+// CIPHER
+route add -net 10.32.0.0 netmask 255.255.252.0 gw 10.32.7.146
+
+// BLUENO
+route add -net 10.32.7.0 netmask 255.255.255.128 gw 10.32.7.146
+
+// DORI/JIPA
+route add -net 10.32.7.128 netmask 255.255.255.248 gw 10.32.7.146
+
+// ELENA
+route add -net 10.32.4.0 netmask 255.255.254.0 gw 10.32.7.150
+
+// FUKUROU
+route add -net 10.32.6.0 netmask 255.255.255.0 gw 10.32.7.150
+
+// JORGE/MAIN
+route add -net 10.32.7.136 netmask 255.255.255.248 gw 10.32.7.150
+```
+
+**Sedangkan pada Water7 dan Pucci tidak ditambahkan routing tambahan dikarenakan sudah terdapat default routing pada router tersebut.**
 
 ## (D)
 ### Tugas berikutnya adalah memberikan ip pada subnet Blueno, Cipher, Fukurou, dan Elena secara dinamis menggunakan bantuan DHCP server. Kemudian kalian ingat bahwa kalian harus setting DHCP Relay pada router yang menghubungkannya.
